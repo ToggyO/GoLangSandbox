@@ -42,7 +42,6 @@ func welcome(rw http.ResponseWriter, r *http.Request) {
 }
 
 func CheckRequestMethod(next http.Handler) http.Handler {
-
 	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
 			log.Printf("Only GET requests are accepted on the path!")

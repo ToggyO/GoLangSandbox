@@ -1,6 +1,6 @@
 package main
 
-import "hello/packages/parallel"
+import "hello/packages/network"
 
 func main() {
 	//var util = new(utils.Utils)
@@ -23,5 +23,9 @@ func main() {
 
 	//interfaces.Run()
 
-	parallel.Run()
+	//parallel.Run()
+
+	//ioexamples.Run()
+
+	network.Run()
 }
