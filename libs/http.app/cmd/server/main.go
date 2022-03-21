@@ -1,9 +1,9 @@
-package server
+package main
 
-import server "http.app/cmd/server/net"
+import "http.app/cmd/server/net"
 
 func main() {
 	var app server.App
 
-	app.Start(":8080")
+	app.Start("8080")
 }

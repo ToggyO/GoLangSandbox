@@ -8,7 +8,7 @@ import (
 type App struct{}
 
 func (a *App) Start(port string) {
-	listener, err := net.Listen("tcp", port)
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		fmt.Println(err)
 		return
