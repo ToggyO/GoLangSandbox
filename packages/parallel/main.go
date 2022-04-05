@@ -1,5 +1,7 @@
 package parallel
 
+import "hello/packages/parallel/async"
+
 func Run() {
 	//startTime := time.Now()
 	//for i := 1; i < 7; i++ {
@@ -12,5 +14,9 @@ func Run() {
 
 	//RunStreaming()
 
-	RunWaitGroup()
+	//RunWaitGroup()
+
+	//async.RunAsync()
+
+	async.RunLongRunningTask()
 }

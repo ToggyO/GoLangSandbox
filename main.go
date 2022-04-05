@@ -1,8 +1,9 @@
 package main
 
-import "hello/packages/network"
+import "hello/packages/operations"
 
 func main() {
+	//generics.Runtime()
 	//var util = new(utils.Utils)
 	//
 	//util.Add(2, 4, 5, 6)
@@ -27,5 +28,7 @@ func main() {
 
 	//ioexamples.Run()
 
-	network.Run()
+	//network.Run()
+
+	operations.RunOperations()
 }
