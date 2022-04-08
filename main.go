@@ -1,6 +1,6 @@
 package main
 
-import "hello/packages/operations"
+import "hello/packages/workers"
 
 func main() {
 	//generics.Runtime()
@@ -30,5 +30,7 @@ func main() {
 
 	//network.Run()
 
-	operations.RunOperations()
+	//operations.RunOperations()
+
+	workers.RunPoolTest()
 }
