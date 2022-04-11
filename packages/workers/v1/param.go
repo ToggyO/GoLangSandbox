@@ -1,4 +1,4 @@
-package workers
+package v1
 
 import "reflect"
 

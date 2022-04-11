@@ -1,4 +1,4 @@
-package workers
+package v1
 
 type task struct {
 	Job        job
@@ -6,7 +6,7 @@ type task struct {
 	ResultChan chan interface{}
 }
 
-func newTask(job job, params []interface{}, resultChan chan interface{}) *task {
+func newTask(job job, params []interface{}, resultChan chan interface{}) task {
 	l := len(params)
 	paramValues := make([]param, l)
 
@@ -14,5 +14,5 @@ func newTask(job job, params []interface{}, resultChan chan interface{}) *task {
 		paramValues[i] = newParamFromInterface(params[i])
 	}
 
-	return &task{job, paramValues, resultChan}
+	return task{job, paramValues, resultChan}
 }

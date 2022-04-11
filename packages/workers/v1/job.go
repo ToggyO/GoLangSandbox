@@ -1,4 +1,4 @@
-package workers
+package v1
 
 type job struct {
 	Function interface{}

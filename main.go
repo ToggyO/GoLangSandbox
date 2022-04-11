@@ -1,6 +1,6 @@
 package main
 
-import "hello/packages/workers"
+import v3 "hello/packages/workers/v3"
 
 func main() {
 	//generics.Runtime()
@@ -32,5 +32,9 @@ func main() {
 
 	//operations.RunOperations()
 
-	workers.RunPoolTest()
+	//v1.RunPoolTest()
+	//v2.RunPool()
+	v3.RunPool()
+	//poollib.RunPoolLib()
+	//poollib.RunPoolTest1()
 }

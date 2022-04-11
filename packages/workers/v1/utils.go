@@ -1,4 +1,4 @@
-package workers
+package v1
 
 import (
 	"errors"
@@ -57,6 +57,6 @@ func getValueFromReflectValue(values []reflect.Value) []interface{} {
 	return args
 }
 
-func invokeTask(task *task) []reflect.Value {
+func invokeTask(task task) []reflect.Value {
 	return reflect.ValueOf(task.Job.Function).Call(transformParamsToValues(task.Params))
 }
