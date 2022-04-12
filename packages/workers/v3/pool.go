@@ -1,82 +1,83 @@
 package v3
 
 import (
-	"context"
-	"fmt"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
+    "context"
+    "errors"
+    "os"
+    "os/signal"
+    "sync"
+    "syscall"
 )
 
 type Pool struct {
-	maxWorkers int
+    maxWorkers int
 
-	consumer consumer
+    consumer consumer
 
-	ctx    context.Context
-	cancel context.CancelFunc
-	wg     *sync.WaitGroup
+    ctx    context.Context
+    cancel context.CancelFunc
+    wg     *sync.WaitGroup
 
-	stopped     bool
-	stoppedChan chan struct{}
+    stopped   bool
+    awaitChan chan struct{}
 }
 
 func NewPool(maxWorkers int) *Pool {
-	ctx, cancel := context.WithCancel(context.Background())
-	c := newConsumer(maxWorkers)
+    ctx, cancel := context.WithCancel(context.Background())
+    c := newConsumer(maxWorkers)
 
-	p := &Pool{
-		maxWorkers: maxWorkers,
+    p := &Pool{
+        maxWorkers: maxWorkers,
 
-		consumer: c,
+        consumer: c,
 
-		ctx:    ctx,
-		cancel: cancel,
-		wg:     &sync.WaitGroup{},
+        ctx:    ctx,
+        cancel: cancel,
+        wg:     &sync.WaitGroup{},
 
-		stoppedChan: make(chan struct{}),
-	}
+        awaitChan: make(chan struct{}),
+    }
 
-	go p.run()
-	go p.handleShutdown()
+    go p.run()
+    go p.handleDispose()
 
-	return p
+    return p
 }
 
 func (p *Pool) run() {
-	// TODO: check possibility to add delta during worker processing his job
-	p.wg.Add(p.maxWorkers)
+    // TODO: check
+    // TODO: check possibility to add delta during worker processing his job
+    //p.wg.Add(p.maxWorkers)
 
-	for i := 0; i < p.maxWorkers; i++ {
-		go p.consumer.runWorker(i+1, p.wg)
-	}
+    for i := 0; i < p.maxWorkers; i++ {
+        // TODO: check
+        p.wg.Add(1)
+        go p.consumer.runWorker(i+1, p.wg)
+    }
 
-	p.consumer.start(p.ctx)
+    p.consumer.start(p.ctx)
 }
 
-func (p *Pool) Exec(task WorkerTask) {
-	if !p.stopped && task != nil {
-		p.consumer.taskQueue <- task
-	}
+func (p *Pool) Exec(task WorkerTask) error {
+    if task != nil && safeSend[WorkerTask](p.consumer.taskQueue, task) {
+        return errors.New("cannot send to disposed pool")
+    }
+    return nil
 }
 
 func (p *Pool) Watch() {
-	<-p.stoppedChan
+    <-p.awaitChan
 }
 
-func (p *Pool) handleShutdown() {
-	defer close(p.consumer.taskQueue)
-	defer close(p.stoppedChan)
+func (p *Pool) handleDispose() {
+    defer close(p.consumer.taskQueue)
+    defer close(p.awaitChan)
 
-	quitChan := make(chan os.Signal)
-	signal.Notify(quitChan, syscall.SIGINT, syscall.SIGTERM)
+    quitChan := make(chan os.Signal)
+    signal.Notify(quitChan, syscall.SIGINT, syscall.SIGTERM)
 
-	<-quitChan
+    <-quitChan
 
-	p.cancel()
-	p.wg.Wait()
-
-	// TODO: delete
-	fmt.Println("After wait")
+    p.cancel()
+    p.wg.Wait()
 }

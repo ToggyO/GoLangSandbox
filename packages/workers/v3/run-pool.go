@@ -6,37 +6,38 @@ import (
 	"time"
 )
 
-func FillPool(pool *Pool) {
+func FillPool(pool *Pool, results chan string) {
 	for {
-		pool.Exec(func() {
+		err := pool.Exec(func() {
 			fmt.Println("KEK")
 			time.Sleep(time.Millisecond * time.Duration(1000+rand.Intn(200)))
+			results <- "SHPEK"
 		})
+		if err != nil {
+			break
+		}
 	}
 }
 
 func RunPool() {
+	fmt.Println("<================ RunPool() start ================>")
+
 	pool := NewPool(5)
 
-	go FillPool(pool)
-	go FillPool(pool)
+	results := make(chan string)
+
+	go FillPool(pool, results)
+	go FillPool(pool, results)
+
+	go func() {
+		for r := range results {
+			fmt.Println(r)
+		}
+	}()
 
 	pool.Watch()
 
-	//requests := []string{"alpha", "beta", "gamma", "delta", "epsilon"}
-	//results := make(chan string, len(requests))
-	//
-	//for _, r := range requests {
-	//	r := r
-	//	pool.Exec(func() {
-	//		results <- r
-	//		//fmt.Println(r)
-	//	})
-	//}
+	//time.Sleep(100000 * time.Millisecond)
 
-	//for r := range results {
-	//	fmt.Println(r)
-	//}
-
-	fmt.Println("RunPool() End")
+	fmt.Println("<================ RunPool() end ================>")
 }
