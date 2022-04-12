@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func FillPool(pool *Pool, results chan string) {
+func fillPool(pool *Pool, results chan string) {
 	for {
 		err := pool.Exec(func() {
 			fmt.Println("KEK")
@@ -26,8 +26,8 @@ func RunPool() {
 
 	results := make(chan string)
 
-	go FillPool(pool, results)
-	go FillPool(pool, results)
+	go fillPool(pool, results)
+	go fillPool(pool, results)
 
 	go func() {
 		for r := range results {

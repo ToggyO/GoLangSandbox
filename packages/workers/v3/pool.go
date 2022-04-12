@@ -44,6 +44,17 @@ func NewPool(maxWorkers int) *Pool {
     return p
 }
 
+func (p *Pool) Exec(task WorkerTask) error {
+    if task != nil && safeSend[WorkerTask](p.consumer.taskQueue, task) {
+        return errors.New("cannot send to disposed pool")
+    }
+    return nil
+}
+
+func (p *Pool) Watch() {
+    <-p.awaitChan
+}
+
 func (p *Pool) run() {
     // TODO: check
     // TODO: check possibility to add delta during worker processing his job
@@ -56,17 +67,6 @@ func (p *Pool) run() {
     }
 
     p.consumer.start(p.ctx)
-}
-
-func (p *Pool) Exec(task WorkerTask) error {
-    if task != nil && safeSend[WorkerTask](p.consumer.taskQueue, task) {
-        return errors.New("cannot send to disposed pool")
-    }
-    return nil
-}
-
-func (p *Pool) Watch() {
-    <-p.awaitChan
 }
 
 func (p *Pool) handleDispose() {
