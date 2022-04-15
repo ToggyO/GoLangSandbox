@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gammazero/workerpool"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -18,21 +19,23 @@ func FillPool(pool *workerpool.WorkerPool) {
 
 func RunPoolLib() {
 	wp := workerpool.New(2)
-	//requests := []string{"alpha", "beta", "gamma", "delta", "epsilon"}
+	requests := []string{"alpha", "beta", "gamma", "delta", "epsilon"}
 
-	go FillPool(wp)
-	go FillPool(wp)
+	//go FillPool(wp)
+	//go FillPool(wp)
 
-	//results := make(chan string, len(requests))
+	results := make(chan string, len(requests))
 
-	//for i, r := range requests {
-	//	r := r
-	//	wp.Submit(func() {
-	//		fmt.Println("Handling request:", r)
-	//		results <- r + strconv.Itoa(i)
-	//		//time.Sleep(100 * time.Millisecond)
-	//	})
-	//}
+	for i, r := range requests {
+		r := r
+		wp.Submit(func() {
+			fmt.Println("Handling request:", r)
+			results <- r + strconv.Itoa(i)
+			time.Sleep(100 * time.Millisecond)
+		})
+	}
+
+	time.Sleep(100000 * time.Millisecond)
 
 	wp.StopWait()
 

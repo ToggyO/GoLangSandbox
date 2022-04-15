@@ -1,6 +1,6 @@
 package main
 
-import v3 "hello/packages/workers/v3"
+import "hello/packages/data_structures"
 
 func main() {
 	//generics.Runtime()
@@ -34,7 +34,8 @@ func main() {
 
 	//v1.RunPoolTest()
 	//v2.RunPool()
-	v3.RunPool()
+	//v3.RunPool()
 	//poollib.RunPoolLib()
 	//poollib.RunPoolTest1()
+	data_structures.RunTestDataStructures()
 }
