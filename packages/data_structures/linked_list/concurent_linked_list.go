@@ -4,23 +4,29 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"hello/packages/data_structures/common"
 	"hello/packages/data_structures/models"
+	"sync"
 )
 
-type LinkedList[T any] struct {
+type ConcurrentLinkedList[T any] struct {
 	head *models.Node[T]
 	tail *models.Node[T]
 	len  int
+
+	lock sync.RWMutex
 }
 
-func NewLinkedList[T any]() *LinkedList[T] {
-	return &LinkedList[T]{
+func NewConcurrentLinkedList[T any]() *ConcurrentLinkedList[T] {
+	return &ConcurrentLinkedList[T]{
 		head: nil,
 		tail: nil,
 		len:  0,
 	}
 }
 
-func (l *LinkedList[T]) Append(data T) {
+func (l *ConcurrentLinkedList[T]) Append(data T) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	node := models.NewNode(data, nil)
 
 	if l.head == nil {
@@ -33,7 +39,10 @@ func (l *LinkedList[T]) Append(data T) {
 	l.len++
 }
 
-func (l *LinkedList[T]) AppendFirst(data T) {
+func (l *ConcurrentLinkedList[T]) AppendFirst(data T) {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	node := models.NewNode(data, l.head)
 	if l.len == 0 {
 		l.tail = node
@@ -43,11 +52,17 @@ func (l *LinkedList[T]) AppendFirst(data T) {
 	l.len++
 }
 
-func (l *LinkedList[T]) RemoveHead() {
+func (l *ConcurrentLinkedList[T]) RemoveHead() {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	l.head = l.head.Next()
 }
 
-func (l *LinkedList[T]) Remove(data T) bool {
+func (l *ConcurrentLinkedList[T]) Remove(data T) bool {
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	current := l.head
 	previous := new(models.Node[T])
 
@@ -64,11 +79,11 @@ func (l *LinkedList[T]) Remove(data T) bool {
 	return false
 }
 
-func (l *LinkedList[T]) NewIterator() *common.Iterator[T] {
+func (l *ConcurrentLinkedList[T]) Iterator() *common.Iterator[T] {
 	return common.NewIterator(l.head)
 }
 
-func (l *LinkedList[T]) handleRemove(current, previous *models.Node[T]) {
+func (l *ConcurrentLinkedList[T]) handleRemove(current, previous *models.Node[T]) {
 	if previous == nil {
 		l.head = current.Next()
 		if l.head == nil {
