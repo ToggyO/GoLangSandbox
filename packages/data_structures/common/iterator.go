@@ -3,8 +3,7 @@ package common
 import "hello/packages/data_structures/models"
 
 type Iterator[T any] struct {
-	current   *models.Node[T]
-	completed bool
+	current *models.Node[T]
 }
 
 func NewIterator[T any](node *models.Node[T]) *Iterator[T] {

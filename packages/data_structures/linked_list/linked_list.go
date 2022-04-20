@@ -1,6 +1,7 @@
 package linked_list
 
 import (
+	"fmt"
 	"github.com/google/go-cmp/cmp"
 	"hello/packages/data_structures/common"
 	"hello/packages/data_structures/models"
@@ -21,6 +22,7 @@ func NewLinkedList[T any]() *LinkedList[T] {
 }
 
 func (l *LinkedList[T]) Append(data T) {
+	fmt.Printf("Append data: %v\n", data)
 	node := models.NewNode(data, nil)
 
 	if l.head == nil {
