@@ -42,15 +42,14 @@ func newConsumer(maxWorkers int, ctx context.Context, cancel context.CancelFunc)
 	}
 }
 
-func (c *consumer) Start() {
+func (c *consumer) Process() {
 	var idle bool
 
 Loop:
 	for {
 		fmt.Println("LOOP")
 
-		l := c.waitingQueue.Len()
-		if l != 0 {
+		if c.waitingQueue.Len() != 0 {
 			if !c.processWaitingQueue() {
 				break Loop
 			}
