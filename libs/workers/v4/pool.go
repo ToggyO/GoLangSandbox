@@ -1,44 +1,39 @@
-package v3
+package v4
 
 import (
 	"context"
 	"errors"
+	"fmt"
 	"hello/libs/workers/common"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 )
 
 type Pool struct {
-	maxWorkers int
-
 	consumer consumer
 
 	ctx    context.Context
 	cancel context.CancelFunc
-	wg     *sync.WaitGroup
 
 	awaitChan chan struct{}
+	stopChan  chan struct{}
 }
 
 func NewPool(maxWorkers int) *Pool {
 	ctx, cancel := context.WithCancel(context.Background())
-	c := newConsumer(maxWorkers)
 
 	p := &Pool{
-		maxWorkers: maxWorkers,
-
-		consumer: c,
+		consumer: newConsumer(maxWorkers, ctx, cancel),
 
 		ctx:    ctx,
 		cancel: cancel,
-		wg:     &sync.WaitGroup{},
 
 		awaitChan: make(chan struct{}),
+		stopChan:  make(chan struct{}),
 	}
 
-	go p.run()
+	go p.consumer.Start()
 	go p.handleDispose()
 
 	return p
@@ -55,29 +50,29 @@ func (p *Pool) Watch() {
 	<-p.awaitChan
 }
 
-func (p *Pool) run() {
-	// TODO: check
-	// TODO: check possibility to add delta during worker processing his job
-	//p.wg.Add(p.maxWorkers)
+func (p *Pool) Stop() {
+	defer func() {
+		fmt.Println("End of pool Stop()")
+	}()
 
-	for i := 0; i < p.maxWorkers; i++ {
-		// TODO: check
-		p.wg.Add(1)
-		go p.consumer.runWorker(i+1, p.wg)
-	}
+	p.stop()
+	p.awaitChan <- struct{}{}
+}
 
-	p.consumer.start(p.ctx)
+func (p *Pool) stop() {
+	p.consumer.Stop()
+	<-p.ctx.Done()
+	fmt.Println("End of pool stop()")
 }
 
 func (p *Pool) handleDispose() {
 	defer close(p.consumer.taskQueue)
 	defer close(p.awaitChan)
 
-	quitChan := make(chan os.Signal)
-	signal.Notify(quitChan, syscall.SIGINT, syscall.SIGTERM)
+	syscallChan := make(chan os.Signal)
+	signal.Notify(syscallChan, syscall.SIGINT, syscall.SIGTERM)
 
-	<-quitChan
-
-	p.cancel()
-	p.wg.Wait()
+	<-syscallChan
+	p.stop()
+	fmt.Println("End of handleDispose()")
 }

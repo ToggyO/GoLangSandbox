@@ -1,6 +1,6 @@
 package main
 
-import "hello/packages/data_structures"
+import v4 "hello/libs/workers/v4"
 
 func main() {
 	//generics.Runtime()
@@ -37,5 +37,36 @@ func main() {
 	//v3.RunPool()
 	//poollib.RunPoolLib()
 	//poollib.RunPoolTest1()
-	data_structures.RunTestDataStructures()
+	//data_structures.RunTestDataStructures()
+	v4.RunPool(false)
 }
+
+// TODO: delete
+//func main() {
+//	messages := make(chan string)
+//	signals := make(chan bool)
+//
+//	select {
+//	case msg := <-messages:
+//		fmt.Println("received message", msg)
+//	default:
+//		fmt.Println("no message received")
+//	}
+//
+//	msg := "hi"
+//	select {
+//	case messages <- msg:
+//		fmt.Println("sent message", msg)
+//	default:
+//		fmt.Println("no message sent")
+//	}
+//
+//	select {
+//	case msg := <-messages:
+//		fmt.Println("received message", msg)
+//	case sig := <-signals:
+//		fmt.Println("received signal", sig)
+//	default:
+//		fmt.Println("no activity")
+//	}
+//}

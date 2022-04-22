@@ -1,6 +1,8 @@
 package linked_list
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func RunTestLinkedList() {
 	fmt.Println("<======= Start of RunTestLinkedList() =======>")
@@ -13,12 +15,10 @@ func RunTestLinkedList() {
 
 	list.AppendFirst(Data{5})
 
-	iterator := list.NewIterator()
+	list.ForEach(func(data Data) {
+		fmt.Println(data.id)
 
-	for iterator.HasNext() {
-		fmt.Println(iterator.Current().Data().id)
-		iterator.Next()
-	}
+	})
 
 	fmt.Println("<======= End of RunTestLinkedList() =======>")
 }

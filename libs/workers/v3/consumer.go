@@ -3,20 +3,21 @@ package v3
 import (
 	"context"
 	"fmt"
+	"hello/libs/workers/common"
 	"math/rand"
 	"sync"
 	"time"
 )
 
 type consumer struct {
-	workerQueue chan WorkerTask
-	taskQueue   chan WorkerTask
+	workerQueue chan common.WorkerTask
+	taskQueue   chan common.WorkerTask
 }
 
 func newConsumer(maxWorkers int) consumer {
 	return consumer{
-		workerQueue: make(chan WorkerTask, maxWorkers),
-		taskQueue:   make(chan WorkerTask, 1),
+		workerQueue: make(chan common.WorkerTask, maxWorkers),
+		taskQueue:   make(chan common.WorkerTask, 1),
 	}
 }
 

@@ -1,6 +1,6 @@
-package v3
+package common
 
-func safeSend[T WorkerTask](ch chan T, value T) (closed bool) {
+func SafeSend[T WorkerTask](ch chan T, value T) (closed bool) {
 	defer func() {
 		if recover() != nil {
 			closed = true

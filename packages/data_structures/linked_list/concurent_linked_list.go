@@ -1,7 +1,6 @@
 package linked_list
 
 import (
-	"hello/packages/data_structures/common"
 	"sync"
 )
 
@@ -15,6 +14,18 @@ func NewConcurrentLinkedList[T any]() *ConcurrentLinkedList[T] {
 	return &ConcurrentLinkedList[T]{
 		list: NewLinkedList[T](),
 	}
+}
+
+func (cl *ConcurrentLinkedList[T]) Len() int {
+	cl.lock.RLock()
+	defer cl.lock.RUnlock()
+	return cl.list.len
+}
+
+func (cl *ConcurrentLinkedList[T]) Head() T {
+	cl.lock.Lock()
+	defer cl.lock.Unlock()
+	return cl.list.head.Data()
 }
 
 func (cl *ConcurrentLinkedList[T]) Append(data T) {
@@ -41,8 +52,8 @@ func (cl *ConcurrentLinkedList[T]) Remove(data T) bool {
 	return cl.list.Remove(data)
 }
 
-func (cl *ConcurrentLinkedList[T]) NewIterator() *common.ConcurrentIterator[T] {
-	//cl.lock.RLock()
-	//defer cl.lock.RUnlock()
-	return common.NewConcurrentIterator(cl.list.head)
+func (cl *ConcurrentLinkedList[T]) ForEach(action func(data T)) {
+	cl.lock.RLock()
+	cl.list.ForEach(action)
+	cl.lock.RUnlock()
 }

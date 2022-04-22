@@ -1,4 +1,4 @@
-package common
+package iterator
 
 import "hello/packages/data_structures/models"
 
@@ -6,7 +6,7 @@ type Iterator[T any] struct {
 	current *models.Node[T]
 }
 
-func NewIterator[T any](node *models.Node[T]) *Iterator[T] {
+func NewIterator[T any](node *models.Node[T]) IIterator[T] {
 	return &Iterator[T]{
 		current: node,
 	}

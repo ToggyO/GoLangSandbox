@@ -2,8 +2,6 @@ package linked_list
 
 import (
 	"fmt"
-	"hello/packages/data_structures/common"
-	"hello/packages/data_structures/models"
 	"math/rand"
 	"sync"
 )
@@ -12,9 +10,6 @@ var (
 	nonConcurrentList = NewLinkedList[Data]()
 	concurrentList    = NewConcurrentLinkedList[Data]()
 )
-
-var iter iIterator[Data] = common.NewIterator[Data](&models.Node[Data]{})
-var iter2 iIterator[Data] = common.NewConcurrentIterator[Data](&models.Node[Data]{})
 
 func RunTestConcurrentLinkedList(runNonConcurrentMode bool) {
 	if runNonConcurrentMode {
@@ -25,7 +20,7 @@ func RunTestConcurrentLinkedList(runNonConcurrentMode bool) {
 	runTestConcurrentLinkedList(concurrentList)
 }
 
-func runTestConcurrentLinkedList(list iTestLinkedList[Data]) {
+func runTestConcurrentLinkedList(list ILinkedList[Data]) {
 	fmt.Println("<======= Start of RunTestConcurrentLinkedList() =======>")
 
 	var wg = new(sync.WaitGroup)
@@ -49,20 +44,31 @@ func runTestConcurrentLinkedList(list iTestLinkedList[Data]) {
 	go iterateOverList("Dynamo", list, wg)
 	go iterateOverList("Mongo", list, wg)
 
+	for i := 1; i < 6; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			id := rand.Intn((max - min) + max)
+			fmt.Printf("Generated data id: %d\n", id)
+			list.Append(Data{id})
+		}()
+	}
+	wg.Wait()
+
+	wg.Add(1)
+	go iterateOverList("Cosmos", list, wg)
 	wg.Wait()
 
 	fmt.Println("<======= End of RunTestConcurrentLinkedList() =======>")
 }
 
-func iterateOverList(loopIdentifier string, list iTestLinkedList[Data], wg *sync.WaitGroup) {
-	iterator := list.NewIterator()
+func iterateOverList(loopIdentifier string, list ILinkedList[Data], wg *sync.WaitGroup) {
 	iteration := 0
-	for iterator.HasNext() {
+	list.ForEach(func(data Data) {
 		iter := iteration
 		fmt.Printf("<#%d> iteration of %s loop: \n", iter, loopIdentifier)
-		fmt.Printf("[%s] loop result form iteration #%d: %d\n", loopIdentifier, iter, iterator.Current().Data().id)
-		iterator.Next()
+		fmt.Printf("[%s] loop result form iteration #%d: %d\n", loopIdentifier, iter, data.id)
 		iteration++
-	}
+	})
 	wg.Done()
 }

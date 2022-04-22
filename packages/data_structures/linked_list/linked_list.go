@@ -3,7 +3,7 @@ package linked_list
 import (
 	"fmt"
 	"github.com/google/go-cmp/cmp"
-	"hello/packages/data_structures/common"
+	"hello/packages/data_structures/common/iterator"
 	"hello/packages/data_structures/models"
 )
 
@@ -17,11 +17,19 @@ func NewLinkedList[T any]() *LinkedList[T] {
 	return &LinkedList[T]{
 		head: nil,
 		tail: nil,
-		len:  0,
 	}
 }
 
+func (l *LinkedList[T]) Len() int {
+	return l.len
+}
+
+func (l *LinkedList[T]) Head() T {
+	return l.head.Data()
+}
+
 func (l *LinkedList[T]) Append(data T) {
+	// TODO: delete
 	fmt.Printf("Append data: %v\n", data)
 	node := models.NewNode(data, nil)
 
@@ -47,6 +55,7 @@ func (l *LinkedList[T]) AppendFirst(data T) {
 
 func (l *LinkedList[T]) RemoveHead() {
 	l.head = l.head.Next()
+	l.len--
 }
 
 func (l *LinkedList[T]) Remove(data T) bool {
@@ -66,8 +75,12 @@ func (l *LinkedList[T]) Remove(data T) bool {
 	return false
 }
 
-func (l *LinkedList[T]) NewIterator() *common.Iterator[T] {
-	return common.NewIterator(l.head)
+func (l *LinkedList[T]) ForEach(action func(data T)) {
+	iter := iterator.NewIterator(l.head)
+	for iter.HasNext() {
+		action(iter.Current().Data())
+		iter.Next()
+	}
 }
 
 func (l *LinkedList[T]) handleRemove(current, previous *models.Node[T]) {
