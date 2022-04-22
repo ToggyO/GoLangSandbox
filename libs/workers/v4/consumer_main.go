@@ -47,7 +47,9 @@ func (c *consumer) Process() {
 
 Loop:
 	for {
-		fmt.Println("LOOP")
+		if idle && c.workersCount == 0 {
+			fmt.Println("Awaiting for tasks...")
+		}
 
 		if c.waitingQueue.Len() != 0 {
 			if !c.processWaitingQueue() {
@@ -64,7 +66,7 @@ Loop:
 
 			select {
 			case c.workerQueue <- task:
-				fmt.Println("HMMMM....")
+				fmt.Println("Task received!")
 			default:
 				if c.workersCount < c.maxWorkers {
 					c.wg.Add(1)
