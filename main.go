@@ -1,6 +1,6 @@
 package main
 
-import v4 "hello/libs/workers/v4"
+import strings_test "hello/packages/strings-test"
 
 func main() {
 	//generics.Runtime()
@@ -38,7 +38,8 @@ func main() {
 	//poollib.RunPoolLib()
 	//poollib.RunPoolTest1()
 	//data_structures.RunTestDataStructures()
-	v4.RunPool(false)
+	//v4.RunPool(false)
+	strings_test.RunStrings()
 }
 
 // TODO: delete
