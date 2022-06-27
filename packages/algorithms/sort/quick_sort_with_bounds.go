@@ -1,6 +1,6 @@
-package algoritms
+package algorithms
 
-func QuickSort(source []int, low int, high int) {
+func QuickSortWithBounds(source []int, low int, high int) {
 	if len(source) == 0 {
 		return
 	}
@@ -30,10 +30,10 @@ func QuickSort(source []int, low int, high int) {
 	}
 
 	if low < right {
-		QuickSort(source, low, right)
+		QuickSortWithBounds(source, low, right)
 	}
 
 	if left < high {
-		QuickSort(source, left, high)
+		QuickSortWithBounds(source, left, high)
 	}
 }

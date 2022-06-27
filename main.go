@@ -39,8 +39,10 @@ func main() {
 	//poollib.RunPoolTest1()
 	//data_structures.RunTestDataStructures()
 	//v4.RunPool(false)
+	//strings_test.RunStrings()
 	//mutexes.RunCond()
 	parallel.RunMerge2Channels()
+	//v4.RunPool(false)
 }
 
 // TODO: delete
