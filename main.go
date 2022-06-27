@@ -1,6 +1,6 @@
 package main
 
-import v4 "hello/libs/workers/v4"
+import "hello/packages/parallel"
 
 func main() {
 	//generics.Runtime()
@@ -38,7 +38,9 @@ func main() {
 	//poollib.RunPoolLib()
 	//poollib.RunPoolTest1()
 	//data_structures.RunTestDataStructures()
-	v4.RunPool(false)
+	//v4.RunPool(false)
+	//mutexes.RunCond()
+	parallel.RunMerge2Channels()
 }
 
 // TODO: delete
