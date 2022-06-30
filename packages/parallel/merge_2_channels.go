@@ -1,6 +1,38 @@
 package parallel
 
-import "sync"
+import (
+	"fmt"
+	"sync"
+)
+
+func RunMerge2Channels() {
+	generator := func(start, end int) <-chan int {
+		result := make(chan int)
+
+		go func() {
+			for i := start; i <= end; i++ {
+				result <- i
+			}
+		}()
+
+		return result
+	}
+
+	multiply := func(x int) int {
+		return x * x
+	}
+
+	in1 := generator(1, 5)
+	in2 := generator(6, 8)
+	out := make(chan int)
+
+	Merge2Channels(multiply, in1, in2, out, 5)
+
+	for v := range out {
+		fmt.Println(v)
+	}
+	fmt.Println("Done")
+}
 
 func Merge2Channels(
 	f func(int) int,
@@ -14,28 +46,17 @@ func Merge2Channels(
 		out chan<- int,
 		n int) {
 		wg := sync.WaitGroup{}
+		wg.Add(n)
 
 		for i := 0; i < n; i++ {
-			var x1 int
-			var x2 int
+			// TODO: check
+			x1 := <-in1
+			x2 := <-in2
 
-			select {
-			case x1 = <-in1:
-			default:
-				x1 = 0
-			}
-
-			select {
-			case x2 = <-in1:
-			default:
-				x2 = 0
-			}
-
-			wg.Add(1)
-			go func() {
+			go func(a, b int, r chan<- int) {
 				defer wg.Done()
-				out <- f(x1) + f(x2)
-			}()
+				r <- f(a) + f(b)
+			}(x1, x2, out)
 		}
 
 		go func() {

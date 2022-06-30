@@ -1,6 +1,6 @@
 package main
 
-import strings_test "hello/packages/strings-test"
+import "hello/packages/parallel"
 
 func main() {
 	//generics.Runtime()
@@ -39,7 +39,10 @@ func main() {
 	//poollib.RunPoolTest1()
 	//data_structures.RunTestDataStructures()
 	//v4.RunPool(false)
-	strings_test.RunStrings()
+	//strings_test.RunStrings()
+	//mutexes.RunCond()
+	parallel.RunMerge2Channels()
+	//v4.RunPool(false)
 }
 
 // TODO: delete

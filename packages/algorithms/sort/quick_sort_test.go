@@ -29,4 +29,16 @@ func TestQuickSort(t *testing.T) {
 			return i < j
 		}))
 	})
+
+	t.Run("quick sort with bounds", func(t *testing.T) {
+		arr := []int{2, 5, -4, 11, 0, 18, 22, 67, 51, 6}
+
+		QuickSortWithBounds(arr, 0, len(arr)-1)
+
+		result := sort.SliceIsSorted(arr, func(i, j int) bool {
+			return i < j
+		})
+
+		require.Equal(t, true, result)
+	})
 }
