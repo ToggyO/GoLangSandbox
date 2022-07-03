@@ -1,6 +1,8 @@
 package main
 
-import "hello/packages/parallel"
+import (
+	"hello/packages/parallel/async_academy"
+)
 
 func main() {
 	//generics.Runtime()
@@ -41,8 +43,9 @@ func main() {
 	//v4.RunPool(false)
 	//strings_test.RunStrings()
 	//mutexes.RunCond()
-	parallel.RunMerge2Channels()
+	//parallel.RunMerge2Channels()
 	//v4.RunPool(false)
+	async_academy.RunAcademyCode()
 }
 
 // TODO: delete
