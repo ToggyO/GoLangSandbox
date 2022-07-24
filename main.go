@@ -1,7 +1,7 @@
 package main
 
 import (
-	"hello/packages/parallel/async_academy"
+	v2 "hello/libs/progress_bar/v2"
 )
 
 func main() {
@@ -45,7 +45,8 @@ func main() {
 	//mutexes.RunCond()
 	//parallel.RunMerge2Channels()
 	//v4.RunPool(false)
-	async_academy.RunAcademyCode()
+	//async_academy.RunAcademyCode()
+	v2.RunProgressBar()
 }
 
 // TODO: delete
