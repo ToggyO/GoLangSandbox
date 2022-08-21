@@ -9,6 +9,10 @@ type BinaryTree[T interface{}] struct {
 	comparer ComparerFunc[T]
 }
 
+// TODO
+//  1. добавить поле, содержащее высоту поддерева данной вершины
+//  2. создать метод, который пересчитывает высоту затронутого поддерева, при операциях изменяющих высоту дерева
+
 func NewBinaryTree[T interface{}](comparer ComparerFunc[T]) *BinaryTree[T] {
 	return &BinaryTree[T]{comparer: comparer}
 }
@@ -91,20 +95,41 @@ func (b *BinaryTree[T]) insert(current *models.TreeNode[T], value T) {
 		nextNode = current.GetRightNode()
 		if nextNode == nil {
 			current.InsertRight(value)
+			current.RecalculateSubtreeHeight()
+			//current.IncrementSubtreeHeight()
+
+			//if current.GetSubtreeHeight() == 0 {
+			//	current.IncrementSubtreeHeight()
+			//	incremented = true
+			//}
 			return
 		}
 		break
-	case -1:
+	case -1: // меньше
 		nextNode = current.GetLeftNode()
 		if nextNode == nil {
 			current.InsertLeft(value)
+			current.RecalculateSubtreeHeight()
+			//if current.GetSubtreeHeight() == 0 {
+			//	current.IncrementSubtreeHeight()
+			//	incremented = true
+			//}
 			return
 		}
 		break
 	}
 
+	current.RecalculateSubtreeHeight()
+	//incremented = b.insert(nextNode, value)
+	//if incremented {
+	//	current.IncrementSubtreeHeight()
+	//}
+	//return
 	b.insert(nextNode, value)
 }
+
+//             current
+//        ?            nil <--- сюда вставляем новую ноду
 
 func (b *BinaryTree[T]) handleRemoveNodes(current, parent *models.TreeNode[T], isCurrentNodeLeft bool) {
 	rightNode := current.GetRightNode()
@@ -150,6 +175,7 @@ func (b *BinaryTree[T]) removeWhenHasBothChildren(current, parent *models.TreeNo
 	}
 }
 
+// поиск минимального значения в дереве
 func (b *BinaryTree[T]) minValue(parent *models.TreeNode[T]) *models.TreeNode[T] {
 	if parent == nil {
 		return nil
@@ -165,6 +191,7 @@ func (b *BinaryTree[T]) minValue(parent *models.TreeNode[T]) *models.TreeNode[T]
 	return previous
 }
 
+// поиск максимального значения в дереве
 func (b *BinaryTree[T]) maxValue(parent *models.TreeNode[T]) *models.TreeNode[T] {
 	if parent == nil {
 		return nil
