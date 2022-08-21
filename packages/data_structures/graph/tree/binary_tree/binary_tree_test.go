@@ -19,7 +19,7 @@ var comparer ComparerFunc[int] = func(a, b int) int {
 }
 
 func TestBinaryTree(t *testing.T) {
-	tree := setup()
+	tree := setup(t)
 
 	t.Run("Insert into tree", func(t *testing.T) {
 		require.NoError(t, errors.New("KEK"), "SHPEK")
@@ -62,24 +62,43 @@ func TestBinaryTree(t *testing.T) {
 	})
 }
 
-func setup() *BinaryTree[int] {
+func setup(t *testing.T) *BinaryTree[int] {
+	t.Helper()
+
 	tree := NewBinaryTree[int](comparer)
 
-	tree.Insert(20)
-	tree.Insert(10)
-	tree.Insert(30)
-	tree.Insert(15)
-	tree.Insert(35)
-	tree.Insert(5)
-	tree.Insert(25)
-	tree.Insert(1)
-	tree.Insert(7)
-	tree.Insert(13)
+	//tree.Insert(20)
+	//tree.Insert(10)
+	//tree.Insert(30)
+	//tree.Insert(15)
+	//tree.Insert(35)
+	//tree.Insert(5)
+	//tree.Insert(25)
+	//tree.Insert(1)
+	//tree.Insert(7)
+	//tree.Insert(13)
+	//tree.Insert(18)
+	//tree.Insert(22)
+	//tree.Insert(27)
+	//tree.Insert(31)
+	//tree.Insert(40)
+
 	tree.Insert(18)
+	tree.Insert(20)
+	tree.Insert(25)
 	tree.Insert(22)
-	tree.Insert(27)
-	tree.Insert(31)
+	tree.Insert(30)
 	tree.Insert(40)
+	tree.Insert(35)
+
+	require.Equal(t, 3, tree.root.GetSubtreeHeight())
+
+	// 18
+	//    20
+	//      25
+	//    22  30
+	//          40
+	//        35
 
 	//		       		            20
 	//			    10     	     	                  30
