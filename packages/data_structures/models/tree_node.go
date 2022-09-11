@@ -36,42 +36,41 @@ func (n *TreeNode[T]) GetRightNode() *TreeNode[T] {
 }
 
 func (n *TreeNode[T]) UpdateLeftNode(node *TreeNode[T]) {
-	n.left = node
+	n.left = node // TODO использовать инсерт для добавления потомка
 }
 
 func (n *TreeNode[T]) UpdateRightNode(node *TreeNode[T]) {
-	n.right = node
+	n.right = node // TODO использовать инсерт для добавления потомка
 }
 
 func (n *TreeNode[T]) GetSubtreeHeight() int {
 	return n.subtreeHeight
 }
 
-func (n *TreeNode[T]) RecalculateSubtreeHeight() {
+func (n *TreeNode[T]) RecalculateSubtreeHeight(reduceHeight bool) {
+	count := 1
+	if reduceHeight {
+		count = -1
+	}
+
+	if n.left == nil && n.right == nil {
+		n.subtreeHeight = 1
+		return
+	}
+
 	if n.left != nil && n.right != nil {
 		maxSubtreeHeight := math.Max(float64(n.left.subtreeHeight), float64(n.right.subtreeHeight))
-		n.subtreeHeight = int(maxSubtreeHeight) + 1
+		n.subtreeHeight = int(maxSubtreeHeight) + count
 		return
 	}
 
 	if n.left != nil {
-		n.subtreeHeight = n.left.subtreeHeight + 1
+		n.subtreeHeight = n.left.subtreeHeight + count
 		return
 	}
 
 	if n.right != nil {
-		n.subtreeHeight = n.right.subtreeHeight + 1
+		n.subtreeHeight = n.right.subtreeHeight + count
 		return
 	}
 }
-
-// TODO: obsolete
-//func (n *TreeNode[T]) IncrementSubtreeHeight() {
-//	n.subtreeHeight++
-//}
-//
-//func (n *TreeNode[T]) DecrementSubtreeHeight() {
-//	if n.subtreeHeight > 0 {
-//		n.subtreeHeight--
-//	}
-//}
